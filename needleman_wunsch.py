@@ -33,7 +33,9 @@ class NeedlemanWunsch:
         self.dir_matrix: list[list[str]] = None
         self.paths: list[tuple[str, str, int]] = []
 
-    def compare(self, seqA: str, seqB: str, n: int, output_file: str = None) -> tuple[list, int]:
+    def compare(
+        self, seqA: str, seqB: str, n: int, output_file: str = None
+    ) -> tuple[list, int]:
         """Compares two sequences.
 
         Args:

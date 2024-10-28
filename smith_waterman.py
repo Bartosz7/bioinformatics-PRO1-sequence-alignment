@@ -13,7 +13,7 @@ from needleman_wunsch import NeedlemanWunsch
 
 class SmithWaterman(NeedlemanWunsch):
     """Implements the Smith-Waterman algorithm
-    for two sequence alignment. Reuses the Needleman-Wunsch code 
+    for two sequence alignment. Reuses the Needleman-Wunsch code
     through inheritance.
 
     Note: Use `compare` method to compare two sequences.

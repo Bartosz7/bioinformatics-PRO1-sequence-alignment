@@ -159,12 +159,41 @@ class TestNeedlemanWunsch(unittest.TestCase):
         """This test case yields 24 optimal paths. We test the n=10 limit."""
         n = 10
         nw = NeedlemanWunsch(submatrix_file="data/submatrix2.csv", GP=-2)
-        all_paths, score = nw.compare("AGTAGTTTCGGATGATAACA", "ATCGAGGCAGTGTATGATTA", n=n)
+        all_paths, score = nw.compare(
+            "AGTAGTTTCGGATGATAACA", "ATCGAGGCAGTGTATGATTA", n=n
+        )
         self.assertEqual(score, 41)
         self.assertEqual(len(all_paths), n)
         self.assertTrue(
             set(all_paths).issubset(
-                set([('AGT--AGTTTC-G-G-ATGATAACA', 'A-TCGAG--GCAGTGTATGAT--TA'), ('A--GTAGTTTC-G-G-ATGATAACA', 'ATCG-AG--GCAGTGTATGAT--TA'), ('AGT--AGTTTC-G-G-ATGATAACA', 'A-TCGAG-G-CAGTGTATGAT--TA'), ('A--GTAGTTTC-G-G-ATGATAACA', 'ATCG-AG-G-CAGTGTATGAT--TA'), ('AGT--AGTTTC-G-G-ATGATAACA', 'A-TCGAGG--CAGTGTATGAT--TA'), ('A--GTAGTTTC-G-G-ATGATAACA', 'ATCG-AGG--CAGTGTATGAT--TA'), ('AGT--AGTTTC-G-G-ATGATAACA', 'A-TCGAG--GCAGTGTATGAT-T-A'), ('A--GTAGTTTC-G-G-ATGATAACA', 'ATCG-AG--GCAGTGTATGAT-T-A'), ('AGT--AGTTTC-G-G-ATGATAACA', 'A-TCGAG-G-CAGTGTATGAT-T-A'), ('A--GTAGTTTC-G-G-ATGATAACA', 'ATCG-AG-G-CAGTGTATGAT-T-A'), ('AGT--AGTTTC-G-G-ATGATAACA', 'A-TCGAGG--CAGTGTATGAT-T-A'), ('A--GTAGTTTC-G-G-ATGATAACA', 'ATCG-AGG--CAGTGTATGAT-T-A'), ('AGT--AGTTTC-G-G-ATGATAACA', 'A-TCGAG--GCAGTGTATGATT--A'), ('A--GTAGTTTC-G-G-ATGATAACA', 'ATCG-AG--GCAGTGTATGATT--A'), ('AGT--AGTTTC-G-G-ATGATAACA', 'A-TCGAG-G-CAGTGTATGATT--A'), ('A--GTAGTTTC-G-G-ATGATAACA', 'ATCG-AG-G-CAGTGTATGATT--A'), ('AGT--AGTTTC-G-G-ATGATAACA', 'A-TCGAGG--CAGTGTATGATT--A'), ('A--GTAGTTTC-G-G-ATGATAACA', 'ATCG-AGG--CAGTGTATGATT--A'), ('AGT--AGTTTC-G-G-ATGATAACA', 'A-TCGAG--GCAGTGTATGATTA--'), ('A--GTAGTTTC-G-G-ATGATAACA', 'ATCG-AG--GCAGTGTATGATTA--'), ('AGT--AGTTTC-G-G-ATGATAACA', 'A-TCGAG-G-CAGTGTATGATTA--'), ('A--GTAGTTTC-G-G-ATGATAACA', 'ATCG-AG-G-CAGTGTATGATTA--'), ('AGT--AGTTTC-G-G-ATGATAACA', 'A-TCGAGG--CAGTGTATGATTA--'), ('A--GTAGTTTC-G-G-ATGATAACA', 'ATCG-AGG--CAGTGTATGATTA--')])
+                set(
+                    [
+                        ("AGT--AGTTTC-G-G-ATGATAACA", "A-TCGAG--GCAGTGTATGAT--TA"),
+                        ("A--GTAGTTTC-G-G-ATGATAACA", "ATCG-AG--GCAGTGTATGAT--TA"),
+                        ("AGT--AGTTTC-G-G-ATGATAACA", "A-TCGAG-G-CAGTGTATGAT--TA"),
+                        ("A--GTAGTTTC-G-G-ATGATAACA", "ATCG-AG-G-CAGTGTATGAT--TA"),
+                        ("AGT--AGTTTC-G-G-ATGATAACA", "A-TCGAGG--CAGTGTATGAT--TA"),
+                        ("A--GTAGTTTC-G-G-ATGATAACA", "ATCG-AGG--CAGTGTATGAT--TA"),
+                        ("AGT--AGTTTC-G-G-ATGATAACA", "A-TCGAG--GCAGTGTATGAT-T-A"),
+                        ("A--GTAGTTTC-G-G-ATGATAACA", "ATCG-AG--GCAGTGTATGAT-T-A"),
+                        ("AGT--AGTTTC-G-G-ATGATAACA", "A-TCGAG-G-CAGTGTATGAT-T-A"),
+                        ("A--GTAGTTTC-G-G-ATGATAACA", "ATCG-AG-G-CAGTGTATGAT-T-A"),
+                        ("AGT--AGTTTC-G-G-ATGATAACA", "A-TCGAGG--CAGTGTATGAT-T-A"),
+                        ("A--GTAGTTTC-G-G-ATGATAACA", "ATCG-AGG--CAGTGTATGAT-T-A"),
+                        ("AGT--AGTTTC-G-G-ATGATAACA", "A-TCGAG--GCAGTGTATGATT--A"),
+                        ("A--GTAGTTTC-G-G-ATGATAACA", "ATCG-AG--GCAGTGTATGATT--A"),
+                        ("AGT--AGTTTC-G-G-ATGATAACA", "A-TCGAG-G-CAGTGTATGATT--A"),
+                        ("A--GTAGTTTC-G-G-ATGATAACA", "ATCG-AG-G-CAGTGTATGATT--A"),
+                        ("AGT--AGTTTC-G-G-ATGATAACA", "A-TCGAGG--CAGTGTATGATT--A"),
+                        ("A--GTAGTTTC-G-G-ATGATAACA", "ATCG-AGG--CAGTGTATGATT--A"),
+                        ("AGT--AGTTTC-G-G-ATGATAACA", "A-TCGAG--GCAGTGTATGATTA--"),
+                        ("A--GTAGTTTC-G-G-ATGATAACA", "ATCG-AG--GCAGTGTATGATTA--"),
+                        ("AGT--AGTTTC-G-G-ATGATAACA", "A-TCGAG-G-CAGTGTATGATTA--"),
+                        ("A--GTAGTTTC-G-G-ATGATAACA", "ATCG-AG-G-CAGTGTATGATTA--"),
+                        ("AGT--AGTTTC-G-G-ATGATAACA", "A-TCGAGG--CAGTGTATGATTA--"),
+                        ("A--GTAGTTTC-G-G-ATGATAACA", "ATCG-AGG--CAGTGTATGATTA--"),
+                    ]
+                )
             )
         )
 

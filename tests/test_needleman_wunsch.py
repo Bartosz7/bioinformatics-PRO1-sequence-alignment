@@ -1,3 +1,13 @@
+"""
+Testcases for the Needleman-Wunsch algorithm implementation.
+
+Most results tests are based on the outputs of another software:
+https://bioboot.github.io/bimm143_W20/class-material/nw/
+
+@author: Bartosz Grabek
+@date: 27-10-2024
+"""
+
 # tests/test_needleman_wunsch.py
 import unittest
 import sys
@@ -50,7 +60,7 @@ class TestNeedlemanWunsch(unittest.TestCase):
         self.assertEqual(nw.score("T", "T"), 10)
         self.assertEqual(nw.score("G", "T"), -2)
 
-    def test_results_1(self):
+    def test_results_1_simple_multiple_paths(self):
         """This is an example result test verifying:
         - the score matrix used in the algorithm
         - the direction matrix used in the algorithm
@@ -76,9 +86,9 @@ class TestNeedlemanWunsch(unittest.TestCase):
         self.assertTrue(np.array_equal(nw.score_matrix, expected_score_matrix))
         self.assertEqual(nw.dir_matrix, expected_dir_matrix)
         self.assertEqual(score, 3)
-        self.assertEqual(all_paths, [("TATA-", "-ATAT"), ("-TATA", "ATAT-")])
+        self.assertEqual(set(all_paths), set([("TATA-", "-ATAT"), ("-TATA", "ATAT-")]))
 
-    def test_results_2(self):
+    def test_results_2_single_path_lab(self):
         """Test case based on example in the lab no.1 pdf"""
         nw = NeedlemanWunsch(submatrix_file="data/submatrix2.csv", GP=-6)
         all_paths, score = nw.compare("TGCTCGTA", "TTCATA", n=10)
@@ -105,8 +115,28 @@ class TestNeedlemanWunsch(unittest.TestCase):
         self.assertTrue(np.array_equal(nw.score_matrix, expected_score_matrix))
         self.assertEqual(nw.dir_matrix, expected_dir_matrix)
         self.assertEqual(score, 11)
-        self.assertEqual(all_paths, [("TGCTCGTA", "T--TCATA")])
+        self.assertEqual(set(all_paths), set([("TGCTCGTA", "T--TCATA")]))
 
+    def test_results_3_multiple_paths(self):
+        nw = NeedlemanWunsch(submatrix_file="data/submatrix4.csv", GP=-2)
+        all_paths, score = nw.compare("GATTACA", "GTCGACGCA", n=10)
+        expected_score_matrix = np.array([
+            [0, -2, -4, -6, -8, -10, -12, -14],
+            [-2, 1, -1, -3, -5, -7, -9, -11],
+            [-4, -1, 0, 0, -2, -4, -6, -8],
+            [-6, -3, -2, -1, -1, -3, -3, -5],
+            [-8, -5, -4, -3, -2, -2, -4, -4],
+            [-10, -7, -4, -5, -4, -1, -3, -3],
+            [-12, -9, -6, -5, -6, -3, 0, -2],
+            [-14, -11, -8, -7, -6, -5, -2, -1],
+            [-16, -13, -10, -9, -8, -7, -4, -3],
+            [-18, -15, -12, -11, -10, -7, -6, -3]
+        ])
+        expected_dir_matrix = [['0', 'L', 'L', 'L', 'L', 'L', 'L', 'L'], ['U', 'D', 'L', 'L', 'L', 'L', 'L', 'L'], ['U', 'U', 'D', 'D', 'DL', 'L', 'L', 'L'], ['U', 'U', 'DU', 'D', 'D', 'DL', 'D', 'L'], ['U', 'DU', 'DU', 'DU', 'D', 'D', 'DL', 'D'], ['U', 'U', 'D', 'DU', 'DU', 'D', 'DL', 'D'], ['U', 'U', 'U', 'D', 'DU', 'U', 'D', 'L'], ['U', 'DU', 'U', 'DU', 'D', 'U', 'U', 'D'], ['U', 'U', 'U', 'DU', 'DU', 'DU', 'DU', 'DU'], ['U', 'U', 'DU', 'DU', 'DU', 'D', 'U', 'D']]
+        self.assertTrue(np.array_equal(nw.score_matrix, expected_score_matrix))
+        self.assertEqual(nw.dir_matrix, expected_dir_matrix)
+        self.assertEqual(score, -3)
+        self.assertEqual(set(all_paths), set([('GATTAC--A', 'GTCGACGCA'), ('GATTA--CA', 'GTCGACGCA')]))
 
 if __name__ == "__main__":
     unittest.main()

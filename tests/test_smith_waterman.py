@@ -51,16 +51,22 @@ class TestSmithWaterman(unittest.TestCase):
 
     def test_results_2_single_local_alignment_long_sequences(self):
         sw = SmithWaterman(submatrix_file="data/submatrix4.csv", GP=-2)
-        all_paths, score = sw.compare("AGTAGTGAGATGTGAGGGA", "GATAGAGGGGATGAAAATAG", n=10)
+        all_paths, score = sw.compare(
+            "AGTAGTGAGATGTGAGGGA", "GATAGAGGGGATGAAAATAG", n=10
+        )
         self.assertEqual(score, 5)
         self.assertEqual(set(all_paths), set([("GAGGG", "GAGGG")]))
 
     def test_results_3_multiple_local_alignments_long_sequences(self):
         sw = SmithWaterman(submatrix_file="data/submatrix4.csv", GP=-2)
-        all_paths, score = sw.compare("ATGCTACTAGGTTAATACCTA", "CGTAGTGGCTGGCACCATGA", n=10)
+        all_paths, score = sw.compare(
+            "ATGCTACTAGGTTAATACCTA", "CGTAGTGGCTGGCACCATGA", n=10
+        )
         self.assertEqual(score, 3)
-        self.assertEqual(set(all_paths), set([("ATG", "ATG"), ("ACC", "ACC"),
-                                              ("GCT", "GCT"), ("TAG", "TAG")]))
+        self.assertEqual(
+            set(all_paths),
+            set([("ATG", "ATG"), ("ACC", "ACC"), ("GCT", "GCT"), ("TAG", "TAG")]),
+        )
 
     def test_results_4_single_local_alignment_long_sequences(self):
         sw = SmithWaterman(submatrix_file="data/submatrix4.csv", GP=-2)
@@ -72,9 +78,9 @@ class TestSmithWaterman(unittest.TestCase):
         sw = SmithWaterman(submatrix_file="data/submatrix4.csv", GP=-2)
         all_paths, score = sw.compare("ATATATCACTTACTCAT", "AGTCAGT", n=10)
         self.assertEqual(score, 3)
-        self.assertEqual(set(all_paths), set([("TCA", "TCA"),
-                                              ("TCACT", "TCAGT"),
-                                              ("TCA", "TCA")]))
+        self.assertEqual(
+            set(all_paths), set([("TCA", "TCA"), ("TCACT", "TCAGT"), ("TCA", "TCA")])
+        )
 
     def test_results_6_single_alignment_long_sequences(self):
         sw = SmithWaterman(submatrix_file="data/submatrix2.csv", GP=-2)

@@ -13,9 +13,7 @@ class NeedlemanWunsch:
     """Implements the Needleman-Wunsch algorithm
     for two sequence alignment."""
 
-    def __init__(
-        self, submatrix_file: str = "submatrix.csv", GP: int = -2
-    ) -> None:
+    def __init__(self, submatrix_file: str = "submatrix.csv", GP: int = -2) -> None:
         """Initializes the algorithm with a substitution matrix
         and a gap penalty (GP).
 

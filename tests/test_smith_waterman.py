@@ -76,6 +76,12 @@ class TestSmithWaterman(unittest.TestCase):
                                               ("TCACT", "TCAGT"),
                                               ("TCA", "TCA")]))
 
+    def test_results_6_single_alignment_long_sequences(self):
+        sw = SmithWaterman(submatrix_file="data/submatrix2.csv", GP=-2)
+        all_paths, score = sw.compare("ATGATGTACAGATAGA", "CCAGCTAGCAGATAG", n=10)
+        self.assertEqual(score, 49)
+        self.assertEqual(set(all_paths), set([("ATG-TA-CAGATAG", "A-GCTAGCAGATAG")]))
+
 
 if __name__ == "__main__":
     unittest.main()

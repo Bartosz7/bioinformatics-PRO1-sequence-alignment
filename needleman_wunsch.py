@@ -14,7 +14,7 @@ class NeedlemanWunsch:
     for two sequence alignment."""
 
     def __init__(
-        self, submatrix_file: str = "submatrix.csv", GP: int = 2, n: int = 10
+        self, submatrix_file: str = "submatrix.csv", GP: int = 2
     ) -> None:
         """Initializes the algorithm with a substitution matrix
         and a gap penalty (GP).
@@ -226,7 +226,7 @@ if __name__ == "__main__":
 
     # TC2
     nw = NeedlemanWunsch("data/submatrix2.csv", GP=-6)
-    nw.compare("TATA", "ATAT", n=2)
+    nw.compare("TATA", "ATAT", n=1, output_file="output.txt")
 
     # TC3
     # nw = NeedlemanWunsch("data/submatrix2.csv", GP=-6)

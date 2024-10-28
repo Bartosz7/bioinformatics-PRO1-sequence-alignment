@@ -62,11 +62,19 @@ class TestSmithWaterman(unittest.TestCase):
         self.assertEqual(set(all_paths), set([("ATG", "ATG"), ("ACC", "ACC"),
                                               ("GCT", "GCT"), ("TAG", "TAG")]))
 
-    def test_tesults_4_single_local_alignment_long_sequences(self):
+    def test_results_4_single_local_alignment_long_sequences(self):
         sw = SmithWaterman(submatrix_file="data/submatrix4.csv", GP=-2)
         all_paths, score = sw.compare("GATCGATCGATCCATA", "ATATCATCCAGGATAC", n=1)
         self.assertEqual(score, 6)
         self.assertEqual(set(all_paths), set([("ATCGATCCA", "ATC-ATCCA")]))
+
+    def test_results_5_multiple_alignments_varying_length_sequences(self):
+        sw = SmithWaterman(submatrix_file="data/submatrix4.csv", GP=-2)
+        all_paths, score = sw.compare("ATATATCACTTACTCAT", "AGTCAGT", n=10)
+        self.assertEqual(score, 3)
+        self.assertEqual(set(all_paths), set([("TCA", "TCA"),
+                                              ("TCACT", "TCAGT"),
+                                              ("TCA", "TCA")]))
 
 
 if __name__ == "__main__":

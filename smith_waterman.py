@@ -47,14 +47,9 @@ class SmithWaterman:
             list[tuple[str,str]], int: list of optimal paths and the final score
         """
         score = self.compute_auxillary_matrices(seqA, seqB)
-        print(score)
-        print(self.score_matrix)
-        # print(self.dir_matrix)
-        for line in self.dir_matrix:
-            print(line)
-        # all_paths = self.find_paths(seqA, seqB, n)
-        # self._output_results(all_paths, score, output_file)
-        # return all_paths, score
+        all_paths = self.find_paths(seqA, seqB, n)
+        self._output_results(all_paths, score, output_file)
+        return all_paths, score
 
     def score(self, A: str, B: str) -> int:
         """Returns the score based on the substitution matrix
@@ -172,7 +167,7 @@ class SmithWaterman:
         """
         output = []
         for i, path in enumerate(all_paths):
-            output.append(f"Global alignment no. {i + 1}:")
+            output.append(f"Local alignment no. {i + 1}:")
             for line in path:
                 output.append(line)
             output.append(f"Score: {score}\n")
@@ -187,6 +182,8 @@ class SmithWaterman:
     def find_paths(self, seqA, seqB, n=1):
         """Uses backtracking via direction matrix to
         find all optimal paths (up to the limit n).
+        Starts from the maximum score in the score matrix.
+        Ends when a path ends or a zero is reached.
 
         Args:
             dir_matrix (list[list[str]]): direction matrix
@@ -198,16 +195,19 @@ class SmithWaterman:
             list[tuple[str, str, int]]: list of optimal paths,
             that is tuples (alignementA, alignementB, score)
         """
-        rowdim, coldim = len(self.dir_matrix), len(self.dir_matrix[0])
+        # rowdim, coldim = len(self.dir_matrix), len(self.dir_matrix[0])
         global all_paths
         all_paths = []
+
+        # SW Step 1: find the maximum score indices
+        max_value = np.max(self.score_matrix)
 
         def backtrack(i, j, pathA, pathB):
             # early checking condition
             if len(all_paths) >= n:
                 return
-            # base case
-            if "0" in self.dir_matrix[i][j]:  # finished
+            # base case: no further path or zero reached
+            if "0" in self.dir_matrix[i][j] or self.dir_matrix[i][j] == "":
                 all_paths.append((pathA[::-1], pathB[::-1]))
                 return
             # recursive cases
@@ -219,7 +219,11 @@ class SmithWaterman:
                 backtrack(i, j - 1, pathA + [seqA[j - 1]], pathB + ["-"])
 
         # start the recursion
-        backtrack(rowdim - 1, coldim - 1, [], [])
+        # for each found global maximum score coordinates
+        # trace back the local alignment
+        for x_max, y_max in np.argwhere(self.score_matrix == max_value):
+            # print(x, y, self.score_matrix[x][y])
+            backtrack(x_max, y_max, [], [])
 
         # change alignments from list of chars to strings
         all_paths = [("".join(pathA), "".join(pathB)) for (pathA, pathB) in all_paths]

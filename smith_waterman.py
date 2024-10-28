@@ -130,7 +130,7 @@ class SmithWaterman(NeedlemanWunsch):
             if len(all_paths) >= n:
                 return
             # base case: no further path or zero reached
-            if "0" in self.dir_matrix[i][j] or self.dir_matrix[i][j] == "":
+            if "0" in self.dir_matrix[i][j] or self.dir_matrix[i][j] == "" or self.score_matrix[i, j] == 0:
                 all_paths.append((pathA[::-1], pathB[::-1]))
                 return
             # recursive cases

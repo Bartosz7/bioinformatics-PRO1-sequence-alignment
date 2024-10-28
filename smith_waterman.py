@@ -8,77 +8,20 @@ Implemented as an adaptation of the Needleman-Wunsch algorithm.
 
 import numpy as np
 import pandas as pd
+from needleman_wunsch import NeedlemanWunsch
 
 
-class SmithWaterman:
+class SmithWaterman(NeedlemanWunsch):
     """Implements the Smith-Waterman algorithm
-    for two sequence alignment."""
+    for two sequence alignment. Reuses the Needleman-Wunsch code 
+    through inheritance.
 
-    def __init__(
-        self, submatrix_file: str = "submatrix.csv", GP: int = 2, n: int = 10
-    ) -> None:
-        """Initializes the algorithm with a substitution matrix
-        and a gap penalty (GP).
-
-        Args:
-            submatrix_file (str): path to the substitution matrix file
-            GP (int): gap penalty
-            n (int): maximum number of optimal paths to find
-
-        Note: output_file is used inside the `compare_sequences` method
-        """
-        self.submatrix = self.import_substitution_matrix(submatrix_file)
-        self.GP = GP
-        # for storing the last results
-        self.score_matrix: np.ndarray = None
-        self.dir_matrix: list[list[str]] = None
-        self.paths: list[tuple[str, str, int]] = []
-
-    def compare(self, seqA: str, seqB: str, n: int, output_file: str = None) -> tuple[list, int]:
-        """Compares two sequences.
-
-        Args:
-            seqA (str): first sequence (horizontal)
-            seqB (str): second sequence (vertical)
-            n (int): number of optimal paths to find
-            output_file (str): path to the output file, if None print to stdout
-
-        Returns:
-            list[tuple[str,str]], int: list of optimal paths and the final score
-        """
-        score = self.compute_auxillary_matrices(seqA, seqB)
-        all_paths = self.find_paths(seqA, seqB, n)
-        self._output_results(all_paths, score, output_file)
-        return all_paths, score
-
-    def score(self, A: str, B: str) -> int:
-        """Returns the score based on the substitution matrix
-
-        Args:
-            A (str): character from sequence A
-            B (str): character from sequence B
-
-        Returns:
-            int: score based on the substitution matrix
-        """
-        return self.submatrix.loc[A][B]
-
-    @staticmethod
-    def import_substitution_matrix(file: str) -> pd.DataFrame:
-        """Imports a substitution matrix as a dataframe from a file
-
-        Args:
-            file (str): path to the file with the substitution matrix
-
-        Returns:
-            pd.DataFrame: substitution matrix
-        """
-        df = pd.read_csv(file)
-        return df.set_index(df.columns)
+    Note: Use `compare` method to compare two sequences.
+    """
 
     def compute_auxillary_matrices(self, seqA: str, seqB: str) -> int:
         """
-        Computes the score and direction matrices for the NW algorithm.
+        Computes the score and direction matrices for the SW algorithm.
         Returns the maximum score.
 
         Args:
@@ -124,26 +67,6 @@ class SmithWaterman:
         # return the final score
         return np.max(self.score_matrix)
 
-    def _create_initial_direction_matrix(
-        self, rowdim: int, coldim: int
-    ) -> list[list[str]]:
-        """
-        Creates a direction matrix for the SW algorithm.
-
-        Args:
-            rowdim (int): number of rows
-            coldim (int): number of columns
-
-        Returns:
-            list[list[str]]: direction matrix
-        """
-        dir_matrix = [["" for _ in range(coldim)] for _ in range(rowdim)]
-        dir_matrix[0] = ["L" for _ in range(coldim)]
-        for i in range(rowdim):
-            dir_matrix[i][0] = "U"
-        dir_matrix[0][0] = "0"
-        return dir_matrix
-
     def _create_initial_score_matrix(self, rowdim: int, coldim: int) -> np.ndarray:
         """
         Creates a score matrix for the SW algorithm.
@@ -160,7 +83,7 @@ class SmithWaterman:
         return score_matrix
 
     def _output_results(self, all_paths, score, output_file=None) -> None:
-        """Output the results of global alignments.
+        """Output the results of local alignments.
 
         Args:
             output_file (str): path to the output file, if None print to stdout
@@ -199,7 +122,7 @@ class SmithWaterman:
         global all_paths
         all_paths = []
 
-        # SW Step 1: find the maximum score indices
+        # SW Step 0: find the maximum score indices
         max_value = np.max(self.score_matrix)
 
         def backtrack(i, j, pathA, pathB):
@@ -218,11 +141,9 @@ class SmithWaterman:
             if "L" in self.dir_matrix[i][j]:
                 backtrack(i, j - 1, pathA + [seqA[j - 1]], pathB + ["-"])
 
-        # start the recursion
-        # for each found global maximum score coordinates
-        # trace back the local alignment
+        # for each found global maximum score coordinates:
         for x_max, y_max in np.argwhere(self.score_matrix == max_value):
-            # print(x, y, self.score_matrix[x][y])
+            # trace back the local alignment
             backtrack(x_max, y_max, [], [])
 
         # change alignments from list of chars to strings
